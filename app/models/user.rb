@@ -27,8 +27,23 @@ class User < ApplicationRecord
     following_user.include?(user)
   end
   
+  def self.search(search,word)
+    if search == "forword_match"
+      User.where(["name LIKE?", "#{word}%"])
+    elsif search == "backword_match"
+      User.where(["name LIKE?", "%#{word}"])
+    elsif search == "perfect_match"
+      User.where(name: word)
+    elsif search == "partial_match"
+      User.where(["name LIKE?", "%#{word}%"])
+    else
+      User.all
+    end
+  end
+  
   attachment :profile_image, destroy: false
 
   validates :name, length: {maximum: 20, minimum: 2}, uniqueness: true
   validates :introduction,  length: { maximum: 50 }
 end
+
